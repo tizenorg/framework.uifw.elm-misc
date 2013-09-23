@@ -26,7 +26,6 @@ rm -rf %{buildroot}
 %__cp etc/profile.d/* %{buildroot}%{_sysconfdir}/profile.d/
 mkdir -p %{buildroot}/usr/share/license
 cp %{_builddir}/%{buildsubdir}/LICENSE %{buildroot}/usr/share/license/%{name}
-cp %{_builddir}/%{buildsubdir}/NOTICE %{buildroot}/usr/share/license/%{name}
 
 %post
 chown root:root /etc/profile.d/elm.sh
