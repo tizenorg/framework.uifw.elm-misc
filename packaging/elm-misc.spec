@@ -30,6 +30,7 @@ cp %{_builddir}/%{buildsubdir}/LICENSE %{buildroot}/usr/share/license/%{name}
 %post
 chown root:root /etc/profile.d/elm.sh
 chown root:root /etc/profile.d/evas.sh
+chown root:root /etc/profile.d/ecore.sh
 
 
 %files
