@@ -1,7 +1,0 @@
-#!/bin/sh
-if [ ${USER} == "root" ]
-then
-	chown root:root /etc/profile.d/elm.sh
-	chown root:root /etc/profile.d/evas.sh
-	chown root:root /etc/profile.d/edje.sh
-fi
