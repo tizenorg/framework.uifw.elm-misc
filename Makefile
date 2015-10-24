@@ -11,45 +11,30 @@ INSTALL = install -c
 EET_EET = eet
 
 all:
-	for t in $(TARGET); do \
-		for s in $(SIZE); do \
-			cd $$t/$$s/profile.d && \
-				echo "export ELM_PROFILE="\"$(ELM_PROFILE)\" >> elm.sh ; \
-				if [ $(EFL_ABORT_ENABLE) = "on" ]; then \
-					echo "export EINA_LOG_ABORT=1" >> eina.sh ; \
-					echo "export EINA_LOG_ABORT_LEVEL=1" >> eina.sh ; \
-				fi ; \
-			cd - ;\
-			cd $$t/$$s/config && \
-				$(EET_EET) -e base.cfg config base.src 1 ; \
-				$(EET_EET) -e color.cfg config color.src 1 ; \
-				$(EET_EET) -e font.cfg config font.src 1 ; \
-			cd - ; \
-		done \
-	done
+	cd $(TARGET)/$(SIZE)/profile.d && \
+		echo "export ELM_PROFILE="\"$(ELM_PROFILE)\" >> elm.sh ; \
+		echo "export ELM_ATSPI_MODE=1" >> elm.sh ; \
+	cd - ;\
+	cd $(TARGET)/$(SIZE)/config && \
+		$(EET_EET) -e base.cfg config base.src 1 ; \
+		$(EET_EET) -e color.cfg config color.src 1 ; \
+		$(EET_EET) -e font.cfg config font.src 1 ; \
+	cd - ; \
 
 clean:
-	for t in $(TARGET); do \
-		for s in $(SIZE); do \
-			cd $$t/$$s/config && \
-			rm -rf *.cfg
-			cd - ; \
-		done \
-	done
+	cd $(TARGET)/$(SIZE)/config && \
+	rm -rf *.cfg
+	cd - ; \
 
 install:
-	for t in $(TARGET); do \
-		cd $$t && \
-		mkdir -p $(THEME_DIR) && \
-		$(INSTALL) common/themes/*.xml $(THEME_DIR) && \
-		cd - ; \
-		for s in $(SIZE); do \
-			cd $$t/$$s && \
-				mkdir -p $(PROFILE_DIR) $(CONFIG_DIR) && \
-				$(INSTALL) profile.d/*.sh $(PROFILE_DIR) && \
-				$(INSTALL) config/*.cfg $(CONFIG_DIR) && \
-				$(INSTALL) config/profile.desktop $(CONFIG_DIR) && \
-				$(INSTALL) config/icon.png $(CONFIG_DIR) ; \
-			cd - ; \
-		done \
-	done
+	cd $(TARGET) && \
+	mkdir -p $(THEME_DIR) && \
+	$(INSTALL) common/themes/*.xml $(THEME_DIR) && \
+	cd - ; \
+	cd $(TARGET)/$(SIZE) && \
+		mkdir -p $(PROFILE_DIR) $(CONFIG_DIR) && \
+		$(INSTALL) profile.d/*.sh $(PROFILE_DIR) && \
+		$(INSTALL) config/*.cfg $(CONFIG_DIR) && \
+		$(INSTALL) config/profile.desktop $(CONFIG_DIR) && \
+		$(INSTALL) config/icon.png $(CONFIG_DIR) ; \
+	cd - ; \

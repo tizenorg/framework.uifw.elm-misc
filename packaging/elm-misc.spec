@@ -1,12 +1,11 @@
 Name:       elm-misc
 Summary:    Elementary config files
-Version:    0.1.142
+Version:    1.13.4
 Release:    1
 Group:      TO_BE/FILLED_IN
 License:    Apache-2.0
 BuildArch:  noarch
 Source0:    %{name}-%{version}.tar.gz
-BuildRequires: model-build-features
 BuildRequires: eet-bin
 
 %description
@@ -18,45 +17,59 @@ Elementary configuration files
 %build
 %if "%{?tizen_profile_name}" == "wearable"
     %if "%{?model_build_feature_formfactor}" == "circle"
-       export ELM_PROFILE=wearable
-       export TARGET=2.3-wearable-circle
-       export SIZE=c1
+     export TARGET=wearable-circle
     %else
-       export ELM_PROFILE=wearable
-       export TARGET=2.3-wearable
-       export SIZE=HVGA
-	%endif
+     export TARGET=wearable
+    %endif
+    export ELM_PROFILE=wearable
+    export SIZE=HVGA
 %else
+ %if "%{?tizen_profile_name}" == "mobile"
     export ELM_PROFILE=mobile
-    export TARGET=2.3-mobile
-    export SIZE=WVGA
+    export TARGET=mobile
+    export SIZE=HD
+ %else
+   %if "%{?tizen_profile_name}" == "tv"
+     export ELM_PROFILE=tv
+     export TARGET=tv
+     export SIZE=UHD
+    %endif
+ %endif
 %endif
-export EFL_ABORT_ENABLE=off
 
 make
 
 %install
 %if "%{?tizen_profile_name}" == "wearable"
     %if "%{?model_build_feature_formfactor}" == "circle"
-       export ELM_PROFILE=wearable
-       export TARGET=2.3-wearable-circle
-       export SIZE=c1
+     export TARGET=wearable-circle
     %else
-       export ELM_PROFILE=wearable
-       export TARGET=2.3-wearable
-       export SIZE=HVGA
-	%endif
+     export TARGET=wearable
+    %endif
+    export ELM_PROFILE=wearable
+    export SIZE=HVGA
 %else
+ %if "%{?tizen_profile_name}" == "mobile"
     export ELM_PROFILE=mobile
-    export TARGET=2.3-mobile
-    export SIZE=WVGA
+    export TARGET=mobile
+    export SIZE=HD
+ %else
+   %if "%{?tizen_profile_name}" == "tv"
+     export ELM_PROFILE=tv
+     export TARGET=tv
+     export SIZE=UHD
+    %endif
+ %endif
 %endif
-export EFL_ABORT_ENABLE=off
 
 make install prefix=%{_prefix} DESTDIR=%{buildroot}
 
 mkdir -p %{buildroot}%{_datadir}/license
 cp %{_builddir}/%{buildsubdir}/COPYING %{buildroot}/%{_datadir}/license/%{name}
+
+#symbolic link default profile to current profile as if default profile is existed.
+#This default profile will be used in the wm compositor desktop mode.
+ln -s %{_datadir}/elementary/config/"%{?tizen_profile_name}" %{buildroot}%{_datadir}/elementary/config/default
 
 %post
 chown root:root /etc/profile.d/ecore.sh
